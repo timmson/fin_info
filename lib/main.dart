@@ -11,6 +11,10 @@ class Site {
 
 var sites = [
   Site(
+      name: "Накопить 🍋",
+      url: "https://t.me/s/makealemon",
+      icon: const Icon(Icons.info)),
+  Site(
       name: "Календарь",
       url: "https://timmson.github.io/prod-cal-ui/",
       icon: const Icon(Icons.calendar_month)),
@@ -20,7 +24,7 @@ var sites = [
       icon: const Icon(Icons.money)),
   Site(
       name: "Инвестиции",
-      url: "https://timmson.github.io/prod-cal-ui/",
+      url: "https://timmson.github.io/fire-calculator/",
       icon: const Icon(Icons.arrow_upward))
 ];
 
@@ -34,12 +38,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Fin Info',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          selectedItemColor: Colors.orangeAccent,
+          unselectedItemColor: Colors.grey,
+        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Fin Info'),
     );
   }
 }
@@ -56,28 +65,38 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late final WebViewController _controller;
 
+  var _selectedIndex = 0;
+
   @override
   void initState() {
+    super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setOnConsoleMessage((message) => {})
-      ..loadRequest(Uri.parse(sites[0].url));
+      ..loadRequest(Uri.parse(sites[_selectedIndex].url));
+  }
+
+  _onBottomTap(index) {
+    setState(() {
+      _selectedIndex = index;
+      _controller.loadRequest(Uri.parse(sites[index].url));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+          toolbarHeight: 10,
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary),
       body: WebViewWidget(controller: _controller),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
         items: [
           ...sites.map((site) =>
               BottomNavigationBarItem(label: site.name, icon: site.icon))
         ],
-        onTap: (index) => _controller.loadRequest(Uri.parse(sites[index].url)),
+        onTap: _onBottomTap,
       ),
     );
   }
