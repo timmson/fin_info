@@ -1,3 +1,4 @@
+import 'package:fin_info/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -40,14 +41,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Fin Info',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: Colors.orangeAccent,
-          unselectedItemColor: Colors.grey,
-        ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
-        useMaterial3: true,
-      ),
+      theme: themeData,
       home: const MyHomePage(title: 'Fin Info'),
     );
   }
@@ -85,12 +79,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
           toolbarHeight: 10,
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary),
+          backgroundColor: themeData.colorScheme.inversePrimary),
       body: WebViewWidget(controller: _controller),
       bottomNavigationBar: BottomNavigationBar(
+
         currentIndex: _selectedIndex,
         items: [
           ...sites.map((site) =>
